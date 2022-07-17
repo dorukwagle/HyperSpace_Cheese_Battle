@@ -88,7 +88,7 @@ public class Board{
              };
         Square[] square = new Square[order.length];
         for( int i = 0; i < order.length; i++ ){
-            byte pos = (byte) (i + 1); //index from 0
+            byte pos = order[i]; //index from 0
             String dir = this.getDirection(pos);
             boolean cheese = this.checkCheese(pos);
             square[i] = new Square(pos, dir, cheese);

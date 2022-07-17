@@ -4,11 +4,24 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.OverlayLayout;
+import javax.swing.border.LineBorder;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Color;
+import java.awt.Font;
 
 public class Square {
+    //define width and height of images and buttons
+    private byte imgWidth = 60;
+    private byte imgHeight = 50;
+    private byte cheeseWidth = 80;
+    private byte cheeseHeight = 70;
+    private byte btnWidth = 70;
+    private byte btnHeight = 85;
+
+    private float imgAlignmentX = 0.5f;
+
     //define some instance attributes
     private byte position;
     private String direction;
@@ -33,14 +46,35 @@ public class Square {
         
         //create square button
         btn = new JButton();
-        btn.setOpaque(false);
+        // btn.setOpaque(false);
         btn.setEnabled(false);
+        btn.setPreferredSize(new Dimension(btnWidth, btnHeight));
+        btn.setBackground(new Color(50, 128, 128, 128));
+        btn.setBorder(new LineBorder(new Color(192, 192, 192)));
+        btn.setFont(new Font("Ariel", Font.BOLD, 45));
+        btn.setForeground(Color.DARK_GRAY);
         btn.setLayout(new OverlayLayout(btn));
+        
+        
+        //if it is first ro last square than write start and win else draw arrow
+        if(position == 1){
+            btn.setText("Start");
+            return;
+        }
+        else if(position  == 100){
+            btn.setText("Win");
+            return;
+        }
         
         //add image arrow to the button
         arrowDir = new ImageIcon( new ImageIcon( Main.RES_PATH + "/" + direction + ".png").getImage()
-        .getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-        btn.setIcon(arrowDir);
+        .getScaledInstance(imgWidth, imgHeight, Image.SCALE_DEFAULT));
+        
+        JLabel arrow = new JLabel(arrowDir);
+        arrow.setPreferredSize(new Dimension(imgWidth, imgHeight));
+        arrow.setAlignmentX(imgAlignmentX);
+        //add arrow after the cheese is added
+        btn.add(arrow);
 
         if(isCheese)
             this.drawCheese();
@@ -70,10 +104,12 @@ public class Square {
 
     private void drawCheese(){
         cheese = new ImageIcon(new ImageIcon(Main.RES_PATH + "/cheese.png").getImage()
-            .getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+            .getScaledInstance(cheeseWidth, cheeseHeight, Image.SCALE_DEFAULT));
         JLabel img = new JLabel(cheese);
+        img.setAlignmentX(imgAlignmentX);
         btn.add(img);
     }
+
     //method for creating rocket
     public void placeRocket(String playerName){
         //initialize player name
