@@ -1,5 +1,8 @@
 package u.doruk.hyperspace.cheese.battle;
 
-public class UserInteraction {
+import javax.swing.event.ActionListener;
+
+
+public class UserInteraction implements ActionListener, KeyEvent{
     
 }

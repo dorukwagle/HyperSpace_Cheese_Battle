@@ -1,23 +1,21 @@
 package u.doruk.hyperspace.cheese.battle;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.plaf.DimensionUIResource;
-
 import java.awt.*;
-import java.net.URL;
 
 
 public class Board{
     //define the size of buttons
-    private byte btnWidth = 100;
-    private byte btnHeight = 30;
+    private short btnWidth = 400;
+    private byte btnHeight = 60;
+
+    private String infoText = "Control Dashboard: ";
 
     //define which position will have which direction arrow
-    private byte[] upArrow = {1, 2, 3, 4, 5, 21, 22, 23, 24, 25, 46, 47, 48, 49, 50, 66, 67, 68, 69, 81, 82, 83, 84, 85, 90};
+    private byte[] upArrow = {11, 2, 3, 4, 5, 21, 22, 23, 24, 25, 46, 47, 48, 49, 50, 66, 67, 68, 69, 81, 82, 83, 84, 85, 90};
     private byte[] downArrow = {96, 97, 98, 99, 86, 87, 88, 89, 26, 27, 28, 29, 71, 76, 73, 78, 75, 80, 52, 57, 54, 59, 62, 64, 65};
     private byte[] leftArrow = {6, 7, 8, 9, 10, 60, 20, 30, 40, 70, 19, 39, 79, 77, 74, 38, 72, 12, 14, 17, 32, 34, 42, 44, 100};
-    private byte[] rightArrow = {91, 92, 93, 94, 95, 11, 13, 15, 16, 18, 31, 33, 35, 36, 37, 41, 43, 45, 51, 55, 53, 56, 58, 61, 63};
+    private byte[] rightArrow = {91, 92, 93, 94, 95, 1, 13, 15, 16, 18, 31, 33, 35, 36, 37, 41, 43, 45, 51, 55, 53, 56, 58, 61, 63};
 
     private byte[] cheeseSquare = {23, 37, 49, 67, 75, 80, 91, 52, 62, 96};
 
@@ -47,7 +45,7 @@ public class Board{
         return cheese;
     }
 
-    public Board( int width, int height, String resources ){
+    public Board( int width, int height){
         //create jframe main application window
         JFrame window = new JFrame("HyperSpace Cheese Battle");
         window.setSize(new Dimension(width, height));
@@ -97,37 +95,62 @@ public class Board{
         //#####################################################################################
 
         //create a text label 
-        JLabel info = new JLabel("Control Dashboard!");
+        JPanel label = new JPanel();
+        label.setLayout(new FlowLayout());
+        label.setBackground(new Color(192, 0, 255, 123));
+        label.setOpaque(true);
+
+        JLabel info = new JLabel(infoText);
+        info.setFont(new Font("Ariel", Font.BOLD, 30));
+        info.setHorizontalAlignment(SwingConstants.LEFT);
+        info.setPreferredSize(new Dimension(width, 25));
         info.setForeground(Color.YELLOW);
-        mainLay.add(info);
+        label.add(info);
+        mainLay.add(label);
 
         //create textview for user interaction
-        JTextArea text = new JTextArea();
-        text.setPreferredSize(new Dimension(width, 60));
-        text.setBackground(Color.DARK_GRAY);
+        JTextArea text = new JTextArea(" Game is starting");
+        text.setPreferredSize(new Dimension(width, 45));
+        text.setBackground(new Color(192, 0, 255, 123));
+        text.setOpaque(true);
+        text.setFont(new Font("Ariel", Font.BOLD, 30));
+        text.setForeground(Color.BLACK);
         text.setEditable(false);
         mainLay.add(text);
 
         //create a horizontal layout for holding buttons
         JPanel btnLay = new JPanel();
-        btnLay.setLayout(new BoxLayout(btnLay, BoxLayout.X_AXIS));
-        btnLay.setPreferredSize(new DimensionUIResource(width, 40));
+        btnLay.setLayout(new FlowLayout());
+        btnLay.setPreferredSize(new Dimension(width, 65));
+        btnLay.setOpaque(true);
+        btnLay.setBackground(new Color(192, 0, 255, 123));
 
         //create buttons
         JButton btnRollDice = new JButton("Roll Dice");
-        btnRollDice.setPreferredSize(new Dimension(btnWidth, btnHeight));
+        btnRollDice.setSize(new Dimension(btnWidth, btnHeight));
         btnRollDice.setEnabled(false);
+        btnRollDice.setOpaque(true);
+        btnRollDice.setBackground(new Color(100, 0, 255, 123));
+        btnRollDice.setFont(new Font("Ariel", Font.ITALIC, 40));
+        btnRollDice.setForeground(Color.BLACK);
         btnLay.add(btnRollDice);
 
         JButton btnMoveRocket = new JButton("Move Rocket");
         btnMoveRocket.setPreferredSize(new Dimension(btnWidth, btnHeight));
         btnMoveRocket.setEnabled(false);
-        btnMoveRocket.setOpaque(false);
+        btnMoveRocket.setOpaque(true);
+        btnMoveRocket.setBackground(new Color(100, 0, 255, 123));
+        btnMoveRocket.setFont(new Font("Ariel", Font.ITALIC, 40));
+        btnMoveRocket.setForeground(Color.BLACK);
         btnLay.add(btnMoveRocket);
 
         JButton btnDestroyEngine = new JButton("Destroy Engine");
         btnDestroyEngine.setPreferredSize(new Dimension(btnWidth, btnHeight));
         btnDestroyEngine.setEnabled(false);
+        btnDestroyEngine.setOpaque(true);
+        btnDestroyEngine.setBackground(new Color(100, 0, 255, 123));
+        btnDestroyEngine.setFont(new Font("Ariel", Font.ITALIC, 40));
+        btnDestroyEngine.setForeground(Color.BLACK);
         btnLay.add(btnDestroyEngine);
         mainLay.add(btnLay);
 

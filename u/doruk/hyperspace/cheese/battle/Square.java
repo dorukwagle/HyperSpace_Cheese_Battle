@@ -49,7 +49,8 @@ public class Square {
         // btn.setOpaque(false);
         btn.setEnabled(false);
         btn.setPreferredSize(new Dimension(btnWidth, btnHeight));
-        btn.setBackground(new Color(50, 128, 128, 128));
+        // btn.setBackground(new Color(50, 128, 128, 128));
+        btn.setBackground(new Color(100, 0, 255, 123));
         btn.setBorder(new LineBorder(new Color(192, 192, 192)));
         btn.setFont(new Font("Ariel", Font.BOLD, 45));
         btn.setForeground(Color.DARK_GRAY);
@@ -121,6 +122,16 @@ public class Square {
     //method for removing rocket
     public void removeRocket(){
         this.rocketPlaced = false;
+
+    }
+
+    //method for placing all the rocket at start
+    public void startRocket(byte numberOfPlayer){
+
+    }
+
+    //method for removing a single rocket from start position
+    public void removeFromStart(Player player){
 
     }
 
