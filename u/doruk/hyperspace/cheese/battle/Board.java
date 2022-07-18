@@ -2,6 +2,8 @@ package u.doruk.hyperspace.cheese.battle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyListener;
+import java.awt.event.ActionListener;
 
 
 public class Board{
@@ -10,7 +12,8 @@ public class Board{
     private byte btnHeight = 60;
 
     private String infoText = "Control Dashboard: ";
-
+    //define text color for buttons and text area
+    Color color = new Color(146, 168, 209);
     //define which position will have which direction arrow
     private byte[] upArrow = {11, 2, 3, 4, 5, 21, 22, 23, 24, 25, 46, 47, 48, 49, 50, 66, 67, 68, 69, 81, 82, 83, 84, 85, 90};
     private byte[] downArrow = {96, 97, 98, 99, 86, 87, 88, 89, 26, 27, 28, 29, 71, 76, 73, 78, 75, 80, 52, 57, 54, 59, 62, 64, 65};
@@ -92,6 +95,18 @@ public class Board{
             square[i] = new Square(pos, dir, cheese);
             boardLay.add(square[i].getSquare());
         }
+        //now sort the array of Squares in ascending order based on their position order i.e. square[0] = 91 square[100] = 0
+        byte length = (byte) square.length;
+        for (int i = 0; i < length; i++) {
+            for (int j = i + 1; j < length; j++) {
+                if (square[i].getPosition() > square[j].getPosition()) {
+                    Square temporary = square[i];
+                    square[i] = square[j];
+                    square[j] = temporary;
+                }
+            }
+        }
+        
         //#####################################################################################
 
         //create a text label 
@@ -112,16 +127,16 @@ public class Board{
         JTextArea text = new JTextArea(" Game is starting");
         text.setPreferredSize(new Dimension(width, 45));
         text.setBackground(new Color(192, 0, 255, 123));
-        text.setOpaque(true);
         text.setFont(new Font("Ariel", Font.BOLD, 30));
-        text.setForeground(Color.BLACK);
-        text.setEditable(false);
+        text.setOpaque(true);
+        text.requestFocus();
+        text.setForeground(color);
         mainLay.add(text);
 
         //create a horizontal layout for holding buttons
         JPanel btnLay = new JPanel();
         btnLay.setLayout(new FlowLayout());
-        btnLay.setPreferredSize(new Dimension(width, 65));
+        btnLay.setPreferredSize(new Dimension(width - 100, 65));
         btnLay.setOpaque(true);
         btnLay.setBackground(new Color(192, 0, 255, 123));
 
@@ -131,8 +146,8 @@ public class Board{
         btnRollDice.setEnabled(false);
         btnRollDice.setOpaque(true);
         btnRollDice.setBackground(new Color(100, 0, 255, 123));
-        btnRollDice.setFont(new Font("Ariel", Font.ITALIC, 40));
-        btnRollDice.setForeground(Color.BLACK);
+        btnRollDice.setFont(new Font("Ariel", Font.BOLD, 40));
+        btnRollDice.setForeground(color);
         btnLay.add(btnRollDice);
 
         JButton btnMoveRocket = new JButton("Move Rocket");
@@ -140,8 +155,8 @@ public class Board{
         btnMoveRocket.setEnabled(false);
         btnMoveRocket.setOpaque(true);
         btnMoveRocket.setBackground(new Color(100, 0, 255, 123));
-        btnMoveRocket.setFont(new Font("Ariel", Font.ITALIC, 40));
-        btnMoveRocket.setForeground(Color.BLACK);
+        btnMoveRocket.setFont(new Font("Ariel", Font.BOLD , 40));
+        btnMoveRocket.setForeground(color);
         btnLay.add(btnMoveRocket);
 
         JButton btnDestroyEngine = new JButton("Destroy Engine");
@@ -149,8 +164,8 @@ public class Board{
         btnDestroyEngine.setEnabled(false);
         btnDestroyEngine.setOpaque(true);
         btnDestroyEngine.setBackground(new Color(100, 0, 255, 123));
-        btnDestroyEngine.setFont(new Font("Ariel", Font.ITALIC, 40));
-        btnDestroyEngine.setForeground(Color.BLACK);
+        btnDestroyEngine.setFont(new Font("Ariel", Font.BOLD, 40));
+        btnDestroyEngine.setForeground(color);
         btnLay.add(btnDestroyEngine);
         mainLay.add(btnLay);
 
@@ -158,5 +173,14 @@ public class Board{
         window.setVisible(true);
         window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        UserInteraction userInteraction = new UserInteraction(square, info, text, btnRollDice, btnMoveRocket, btnDestroyEngine);
+        ActionListener actionListener = (ActionListener) userInteraction;
+        btnRollDice.addActionListener(actionListener);
+        btnMoveRocket.addActionListener(actionListener);
+        btnDestroyEngine.addActionListener(actionListener);
+
+        text.addKeyListener((KeyListener) actionListener);
+        userInteraction.startGame();
     }
 }

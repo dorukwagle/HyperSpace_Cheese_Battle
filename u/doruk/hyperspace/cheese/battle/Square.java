@@ -4,6 +4,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.OverlayLayout;
+import java.awt.FlowLayout;
 import javax.swing.border.LineBorder;
 
 import java.awt.Dimension;
@@ -45,7 +46,7 @@ public class Square {
         this.isCheese = isCheese;
         
         //create square button
-        btn = new JButton();
+        btn = new JButton(String.valueOf(this.position));
         // btn.setOpaque(false);
         btn.setEnabled(false);
         btn.setPreferredSize(new Dimension(btnWidth, btnHeight));
@@ -119,20 +120,21 @@ public class Square {
         
     }
 
-    //method for removing rocket
+    //method for removing rocket, when the rocket moves to next square remove from current square
     public void removeRocket(){
         this.rocketPlaced = false;
 
     }
 
     //method for placing all the rocket at start
-    public void startRocket(byte numberOfPlayer){
-
+    public void startRocket(Player player){
+        JLabel play = player.getPlayer();
+        this.btn.add(play);
     }
 
     //method for removing a single rocket from start position
     public void removeFromStart(Player player){
-
+        this.btn.remove(player.getPlayer());
     }
 
 }
