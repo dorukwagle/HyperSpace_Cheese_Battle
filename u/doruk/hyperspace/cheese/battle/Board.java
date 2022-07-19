@@ -118,7 +118,7 @@ public class Board{
         JLabel info = new JLabel(infoText);
         info.setFont(new Font("Ariel", Font.BOLD, 30));
         info.setHorizontalAlignment(SwingConstants.LEFT);
-        info.setPreferredSize(new Dimension(width, 25));
+        info.setPreferredSize(new Dimension(width, 30));
         info.setForeground(Color.YELLOW);
         label.add(info);
         mainLay.add(label);

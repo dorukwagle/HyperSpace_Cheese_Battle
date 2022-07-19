@@ -9,6 +9,7 @@ public class Player {
     private byte playerId;
     private String playerName;
     private String playerRocket;
+    private byte position = 1;
     //define width and height in other squares except start square
     private byte width = 80;
     private byte height = 90;
@@ -26,7 +27,15 @@ public class Player {
     public byte getPlayerId(){
         return this.playerId;
     }
+
+    public byte getPosition(){
+        return this.position;
+    }
     
+    public void setPosition(byte pos){
+        this.position = pos;
+    }
+
     //returns the Player object i.e. player rocket image
     public JLabel getPlayer(){
         ImageIcon img = new ImageIcon( new ImageIcon(this.playerRocket).getImage()
