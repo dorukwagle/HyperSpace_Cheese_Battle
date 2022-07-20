@@ -46,6 +46,8 @@ public class MoveValidation {
         //if empty square is 0 than the move is not allowed
         if(emptySquare == 0)
             return 0;
+        if(emptySquare < 1 || emptySquare > 100)
+            return 0;
 
         while (square[emptySquare - 1].isRocketPlaced()){
             //since we always move the rocket 1 square in the direction of valid but occupied square arrow

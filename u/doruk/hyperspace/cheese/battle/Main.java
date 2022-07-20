@@ -6,6 +6,8 @@ public class Main{
     public static final String  RES_PATH = new Main().getClass().getResource("/src").toString().replace("file:", "");
     private static byte numberOfPlayer;
     private static String[] totalPlayers;
+    private static short boardHeight = 1000;
+    private static short boardWidth = 1200;
     public Main(){
        
     }
@@ -14,6 +16,14 @@ public class Main{
     }
     public static String[] getPlayersName(){
         return Main.totalPlayers;
+    }
+
+    public static short getBoardWidth(){
+        return boardWidth;
+    }
+
+    public static short getBoardHeight(){
+        return boardHeight;
     }
 
     private static boolean invalidCount(byte n){

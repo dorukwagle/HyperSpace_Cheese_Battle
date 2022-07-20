@@ -30,13 +30,18 @@ public class Square {
     //store if rocket is placed in this square
     private boolean rocketPlaced = false;
 
-    JButton btn;
-    ImageIcon cheese;
-    ImageIcon arrowDir; //arrow direction
-    ImageIcon rocket;   // rocket
+    private JButton btn;
+    private ImageIcon cheese;
+    private ImageIcon arrowDir; //arrow direction
+    private ImageIcon rocket;   // rocket
 
     //store current player when placed in this square
-    Player currentPlayer;
+    private Player currentPlayer;
+
+    //store jlabel i.e. player rocket for start button as well as other buttons
+    private JLabel currentRocket;
+
+    private static JLabel[] rocketsAtStart = new JLabel[Main.getPlayerCount()];
     
     public Square(byte position, String direction, boolean isCheese){
         //initialize all the variables
@@ -91,33 +96,32 @@ public class Square {
     
     //method for creating rocket
     public void placeRocket(Player player){
-        this.btn.add(player.getPlayer());
+        this.currentRocket = player.getPlayer();
+        this.btn.add(currentRocket);
         this.rocketPlaced = true;
         this.currentPlayer = player;
         player.setPosition(this.position);
     }
     
     //method for removing rocket, when the rocket moves to next square remove from current square
-    public void removeRocket(Player player){
-        if(!rocketPlaced)
-        return;
-        if(this.currentPlayer != player)
-        return;
-        this.btn.remove(player.getPlayer());
+    public void removeRocket(){
+        this.btn.remove(this.currentRocket);
         this.rocketPlaced = false;
         this.currentPlayer = null;
     }
     
     //method for placing all the rocket at start
     public void startRocket(Player player){
-        JLabel play = player.getPlayer();
+        rocketsAtStart[player.getPlayerId() - 1] = player.getPlayer();
         player.setPosition(this.position);
-        this.btn.add(play);
+        this.btn.add(rocketsAtStart[player.getPlayerId() - 1]);
     }
     
     //method for removing a single rocket from start position
     public void removeFromStart(Player player){
-        this.btn.remove(player.getPlayer());
+        this.btn.remove(rocketsAtStart[player.getPlayerId() - 1]);
+        this.btn.revalidate();
+        this.btn.repaint();
     }
     
 
@@ -140,5 +144,4 @@ public class Square {
     public boolean isRocketPlaced(){
         return this.rocketPlaced;
     }
-    
 }

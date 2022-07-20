@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import java.util.concurrent.TimeUnit;;
+
 
 public class UserInteraction implements ActionListener, KeyListener{
     private JTextArea text;
@@ -16,6 +18,8 @@ public class UserInteraction implements ActionListener, KeyListener{
     private JButton btnRollDice;
     private JButton btnMoveRocket;
     private JButton btnDestroyEngine;
+
+    private Board board;
 
     //initialize Square class
     private Square[] square;
@@ -35,8 +39,7 @@ public class UserInteraction implements ActionListener, KeyListener{
     //store if player wants to destroy engine or roll  the dice
     String cheeseAction = "";
 
-
-    public UserInteraction(Square[] square, JLabel info, JTextArea text, JButton btnRollDice,
+    public UserInteraction(Board board, Square[] square, JLabel info, JTextArea text, JButton btnRollDice,
                             JButton btnMoveRocket, JButton destroyEngine){
         this.btnRollDice = btnRollDice;
         this.btnMoveRocket = btnMoveRocket;
@@ -44,36 +47,45 @@ public class UserInteraction implements ActionListener, KeyListener{
         this.info = info;
         this.square = square;
         this.text = text;
+        this.board = board;
         this.infoLabel = info.getText();
         this.dice = new Dice();
     }
-
     
     //display information or action that user needs to perform in info text
     private void setInfoText(String text){
         this.info.setText(this.infoLabel + text);
     }
-    //clear anything asked by the game to the user
-    private void clearInfoText(){
-        this.info.setText(infoLabel);
-    }
 
+    //method to get the dice number
+    private byte getDice(String question){
+        this.setInfoText(question);
+        while(this.diceResult == 0){
+            try{
+                TimeUnit.MILLISECONDS.sleep(200);
+            }catch(Exception e){}
+        }
+        byte input = this.diceResult;
+        this.diceResult = 0;
+        return input;
+    }
     //method to ask user something
-    private byte askUser(String question, String inputType){
+    private byte askUser(String question){
         this.setInfoText(question);
         //now wait until the user enters the player number
-         while( ( inputType.equals("dice") ? (this.diceResult == 0) : (this.userInput.equals("") ) ) ){
+        while(this.userInput.equals("")){
             try{
-                wait(500);
+                TimeUnit.MILLISECONDS.sleep(200);
             }catch(Exception e){}
         }
         byte input = 0;
         try{
-            input = (inputType.equals("dice") ? this.diceResult : Byte.parseByte(this.userInput) ) ;
-        }catch(Exception e){} 
+            input = Byte.parseByte(this.userInput);
+        }catch(Exception e){
+            // System.out.println(e.toString());
+        }
         //make userInput empty again
         this.userInput = "";
-        this.diceResult = 0;
         this.text.setText("");
         return input;
     }
@@ -85,7 +97,7 @@ public class UserInteraction implements ActionListener, KeyListener{
         boolean gameWon = false;
         while(!gameWon){
             //roll dice for every player one by one
-            for ( int i = 0; i < this.player.length; ++i){
+            for(int i = 0 ; i < this.player.length; ++i){
                 //lets assume current player wins the game
                 String winner = player[i].getPlayerName();
                 //store initial position of player
@@ -93,7 +105,7 @@ public class UserInteraction implements ActionListener, KeyListener{
                 
                 String name = player[i].getPlayerName();
                 this.btnRollDice.setEnabled(true);
-                byte diceNum = this.askUser(name + ", please roll a dice !", "dice");
+                byte diceNum = this.getDice(name + ", please roll a dice !");
                 
                 //since the dice is rolled now this player should move the rocket
                 //also make the move dice button clickable
@@ -109,10 +121,12 @@ public class UserInteraction implements ActionListener, KeyListener{
                 //check if the rocket is at start position and remove it from there
                 if(initialPosition == 1){
                     square[initialPosition - 1].removeFromStart(player[i]);
+                    this.board.repaintBoard();
                 }
                 else{
                     //remove rocket from initial place, other than start position
-                    square[initialPosition - 1].removeRocket(player[i]);
+                    square[initialPosition - 1].removeRocket();
+                    this.board.repaintBoard();
                 }
                 //place the player, rocket to the new final position
                 square[destinationSquare - 1].placeRocket(player[i]);
@@ -123,14 +137,17 @@ public class UserInteraction implements ActionListener, KeyListener{
                     this.setInfoText(winner + " won the game!!!");
                     this.text.setText("!!!~~~" + winner + "~~~!!! won the game!!!");
                     gameWon = true;
+                    this.btnRollDice.setText("Restart Game");
+                    this.btnRollDice.setEnabled(true);
+                    this.text.setText("Please click 'Restart Game' button to restart the game");
                     break;
                 }
                 //check if the rocket is at cheese position
                 if(!square[destinationSquare - 1].isCheese())
                     continue;
                 //if it is cheese than give the player with two optioon
-                String question = name + ", consumed cheese. What would you like to do? (1:roll again, 2: destroy engine";
-                byte action = this.askUser(question, "");
+                String question = name + ", consumed cheese. What would you like to do? (1:roll again, 2: destroy engine)";
+                byte action = this.askUser(question);
                 //if user would like to roll the dice again, than just continue the loop with his turn again
                 if(action == 1){
                     --i;
@@ -138,18 +155,35 @@ public class UserInteraction implements ActionListener, KeyListener{
                 }
                 //if user would like to destroy engine
                 question = "Destroy Engine of: ";
-                for (int j = 0; j < this.player.length; ++j)
-                    question += ((j + 1) + ":" + player[j].getPlayerName());
-                byte playerId = this.askUser(question, "any");
+                String engineList = "";
+                for (int j = 0; j < this.player.length; ++j){
+                    if(player[j].getPlayerId() == player[i].getPlayerId())
+                        continue;
+                    question += (player[j].getPlayerId() + ":" + player[j].getPlayerName());
+                    engineList += ("," + String.valueOf(player[j].getPlayerId()));
+                }
+
+                byte playerId = this.askUser(question);
+                //check if the user enters the valid id
+                while(engineList.indexOf(Byte.toString(playerId)) < 0){
+                    playerId = this.askUser(question);
+                }
                 Player play = player[playerId - 1];
                 this.setInfoText("Destroy " + play.getPlayerName() + "'s rocket engine");
                 this.btnDestroyEngine.setEnabled(true);
                 //wait until the button is clicked
-                while(!this.destroyEngineBtnClicked){}
+                while(!this.destroyEngineBtnClicked){
+                    try{
+                        TimeUnit.MILLISECONDS.sleep(200);
+                    }catch(Exception e){}
+                }
+                this.destroyEngineBtnClicked = false;
                 //since the button is clicked
                 //now remove the selected player from its current position and place at start position
-                square[play.getPosition() - 1].removeRocket(play);
+                square[play.getPosition() - 1].removeRocket();
                 square[0].startRocket(player[playerId - 1]);
+                this.board.repaintBoard();
+                this.btnDestroyEngine.setEnabled(false);
             }
         }
     }
@@ -187,6 +221,9 @@ public class UserInteraction implements ActionListener, KeyListener{
             this.btnDestroyEngine.setEnabled(false);
             this.destroyEngineBtnClicked = true;
         }
+        else if(button.equals("Restart Game")){
+            new Board(Main.getBoardWidth(), Main.getBoardHeight());
+        }
     }
 
     @Override
@@ -207,7 +244,7 @@ public class UserInteraction implements ActionListener, KeyListener{
         // Auto-generated method stub
         char c = e.getKeyChar();
         if(c == KeyEvent.VK_ENTER){
-            this.userInput = this.text.getText();
+            this.userInput = this.text.getText().replaceAll("\n", "");
             e.consume();
             this.text.setText("");
         }

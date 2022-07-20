@@ -7,6 +7,17 @@ import java.awt.event.ActionListener;
 
 
 public class Board{
+    //define gui variables
+    private JFrame window;
+    private JPanel boardLay;
+    private JPanel mainLay;
+
+    //contents of dashboard
+    private JLabel info;
+    private JTextArea text;
+    private JPanel dashboard;
+    private JPanel label;
+
     //define the size of buttons
     private short btnWidth = 400;
     private byte btnHeight = 60;
@@ -48,11 +59,16 @@ public class Board{
         return cheese;
     }
 
+    //to re paint all the components
+    public void repaintBoard(){
+        this.boardLay.revalidate();
+        this.boardLay.repaint();
+    }
+
     public Board( int width, int height){
         //create jframe main application window
-        JFrame window = new JFrame("HyperSpace Cheese Battle");
+        this.window = new JFrame("HyperSpace Cheese Battle");
         window.setSize(new Dimension(width, height));
-        // window.getContentPane().setLayout(new BorderLayout());
 
         //add background image
         ImageIcon img = new ImageIcon( new ImageIcon(Main.RES_PATH + "/space.jpg").getImage().getScaledInstance(width, height, Image.SCALE_DEFAULT) );
@@ -61,13 +77,13 @@ public class Board{
         window.add(bg);
         
         //create main vertical layout that will hold all the components
-        JPanel mainLay = new JPanel();
+        mainLay = new JPanel();
         mainLay.setLayout(new BoxLayout(mainLay, BoxLayout.Y_AXIS));
         mainLay.setOpaque(false);
         bg.add(mainLay);
 
         //create a board layout to hold the board or the game's squares
-        JPanel boardLay = new JPanel();
+        boardLay = new JPanel();
         boardLay.setLayout(new GridLayout(10, 10));
         boardLay.setBounds(0, 0, width, height - 100);
         boardLay.setOpaque(false);
@@ -109,34 +125,39 @@ public class Board{
         
         //#####################################################################################
 
+        //create a user dashboard
+        dashboard = new JPanel();
+        dashboard.setLayout(new BoxLayout(dashboard, BoxLayout.Y_AXIS));
+        dashboard.setBackground(Color.DARK_GRAY);
+        dashboard.setOpaque(true);
         //create a text label 
-        JPanel label = new JPanel();
-        label.setLayout(new FlowLayout());
-        label.setBackground(new Color(192, 0, 255, 123));
-        label.setOpaque(true);
+        label = new JPanel();
+        label.setLayout(new  FlowLayout());
+        label.setOpaque(false);
+        dashboard.add(label);
 
-        JLabel info = new JLabel(infoText);
-        info.setFont(new Font("Ariel", Font.BOLD, 30));
+        info = new JLabel(infoText);
+        info.setFont(new Font("Ariel", Font.BOLD, 20));
         info.setHorizontalAlignment(SwingConstants.LEFT);
-        info.setPreferredSize(new Dimension(width, 30));
+        info.setPreferredSize(new Dimension(width, 40));
         info.setForeground(Color.YELLOW);
+        info.setOpaque(false);
         label.add(info);
-        mainLay.add(label);
-
+        
         //create textview for user interaction
-        JTextArea text = new JTextArea(" Game is starting");
-        text.setPreferredSize(new Dimension(width, 45));
-        text.setBackground(new Color(192, 0, 255, 123));
+        text = new JTextArea(" Game is starting");
+        text.setPreferredSize(new Dimension(width, 35));
         text.setFont(new Font("Ariel", Font.BOLD, 30));
-        text.setOpaque(true);
+        text.setOpaque(false);
         text.requestFocus();
         text.setForeground(color);
-        mainLay.add(text);
-
+        dashboard.add(text);
+        mainLay.add(dashboard);
+        
         //create a horizontal layout for holding buttons
         JPanel btnLay = new JPanel();
         btnLay.setLayout(new FlowLayout());
-        btnLay.setPreferredSize(new Dimension(width - 100, 65));
+        btnLay.setPreferredSize(new Dimension(width - 100, 60));
         btnLay.setOpaque(true);
         btnLay.setBackground(new Color(192, 0, 255, 123));
 
@@ -174,7 +195,7 @@ public class Board{
         window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        UserInteraction userInteraction = new UserInteraction(square, info, text, btnRollDice, btnMoveRocket, btnDestroyEngine);
+        UserInteraction userInteraction = new UserInteraction(this, square, info, text, btnRollDice, btnMoveRocket, btnDestroyEngine);
         ActionListener actionListener = (ActionListener) userInteraction;
         btnRollDice.addActionListener(actionListener);
         btnMoveRocket.addActionListener(actionListener);
@@ -182,5 +203,6 @@ public class Board{
 
         text.addKeyListener((KeyListener) actionListener);
         userInteraction.startGame();
+
     }
 }

@@ -3,13 +3,14 @@ package u.doruk.hyperspace.cheese.battle;
 import javax.swing.JLabel;
 import java.awt.Image;
 import javax.swing.ImageIcon;
-import java.awt.Dimension;
 
 public class Player {
     private byte playerId;
     private String playerName;
     private String playerRocket;
     private byte position = 1;
+    //store the player rocket
+    private JLabel player;
     //define width and height in other squares except start square
     private byte width = 80;
     private byte height = 90;
@@ -31,7 +32,7 @@ public class Player {
     public byte getPosition(){
         return this.position;
     }
-    
+
     public void setPosition(byte pos){
         this.position = pos;
     }
@@ -40,7 +41,7 @@ public class Player {
     public JLabel getPlayer(){
         ImageIcon img = new ImageIcon( new ImageIcon(this.playerRocket).getImage()
                         .getScaledInstance(width, height, Image.SCALE_DEFAULT));
-        JLabel player = new JLabel(img);
-        return player;
+        this.player = new JLabel(img);
+        return this.player;
     }
 }
