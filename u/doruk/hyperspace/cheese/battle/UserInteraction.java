@@ -110,9 +110,15 @@ public class UserInteraction implements ActionListener, KeyListener{
                 //since the dice is rolled now this player should move the rocket
                 //also make the move dice button clickable
                 byte destinationSquare = MoveValidation.getValidSquare(diceNum, player[i], this.square);
-                if( destinationSquare == 0 ) //move is not valid so leave it
+                if( destinationSquare == 0 ) { //move is not valid so leave it
+                    this.setInfoText(name + ", no " + diceNum + " squares left");
+                    try{
+                        TimeUnit.MILLISECONDS.sleep(1000);
+                    }catch (Exception e){}
+
                     continue;
-                
+                }
+
                 //enable the move rocket button
                 this.btnMoveRocket.setEnabled(true);
                 this.setInfoText(name + ", got " + diceNum + " please move your rocket!");

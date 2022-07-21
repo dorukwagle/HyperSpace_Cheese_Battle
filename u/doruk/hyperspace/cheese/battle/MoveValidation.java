@@ -1,6 +1,57 @@
 package u.doruk.hyperspace.cheese.battle;
 
 public class MoveValidation {
+    //store the min and max value of different rows
+    private static byte rows[][] = {
+        {1, 10}, {11, 20}, {21, 30},
+        {31, 40}, {41, 50}, {51, 60},
+        {61, 70}, {71, 80}, {81, 90},
+        {91, 100}
+    };
+
+    //method for searching and identifying which in which row is the player currently in and which is the destination square
+    //if both the square are in same row than only player can move left or right
+    private static boolean isAtSameRow(byte currentPosition, byte targetPosition){
+        boolean sameRow = false;
+        for(byte i = 0; i < rows.length; ++i){
+            if((rows[i][0] <= currentPosition && rows[i][1] >= currentPosition) &&
+            (rows[i][0] <= targetPosition && rows[i][1] >= targetPosition) )
+                sameRow = true;
+        }
+        return sameRow;
+    }
+
+    //previous bugged method for moveValidation
+ /*
+    private static byte validateMove(byte diceNum, Player player, Square[] square){
+        byte validSquare = 0 ;
+        byte playerPos = player.getPosition();
+        Square playerSquare = square[playerPos - 1];
+        String direction = playerSquare.getDirection();
+        if(direction.equals("up")){
+            validSquare = (byte) (playerPos + diceNum * 10);
+            if( validSquare > 100 ) //this move is invalid as there are no enough squares to move
+                validSquare = 0;
+        }
+        else if(direction.equals("down")){
+            validSquare = (byte) ( playerPos - diceNum * 10 );
+            if( validSquare < 1 )
+                validSquare = 0;
+        }
+        else if( direction.equals("right") ){
+            validSquare = (byte) ( playerPos + diceNum );
+            if ( ( (int)(validSquare / 10) > (int)(playerPos / 10) ))
+                validSquare = 0;
+        }
+        else if( direction.equals("left") ){
+            validSquare = (byte) ( playerPos - diceNum );
+            if ( ( (int)(validSquare / 10) < (int)(playerPos / 10) ) )
+                validSquare = 0;
+        }
+        return validSquare;
+    }
+ */
+
     //method to check if the move is valid or not
     //it checks the direction of movement and calculates the required square
     //if there is not enough square to make the move than returns 0
@@ -27,12 +78,12 @@ public class MoveValidation {
         }
         else if( direction.equals("right") ){
             validSquare = (byte) ( playerPos + diceNum );
-            if ( ( (int)(validSquare / 10) > (int)(playerPos / 10) ))
+            if ( !isAtSameRow(playerPos, validSquare) )
                 validSquare = 0;
         }
         else if( direction.equals("left") ){
             validSquare = (byte) ( playerPos - diceNum );
-            if ( ( (int)(validSquare / 10) < (int)(playerPos / 10) ) )
+            if ( !isAtSameRow(playerPos, validSquare) )
                 validSquare = 0;
         }
         return validSquare;
