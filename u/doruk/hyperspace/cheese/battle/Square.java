@@ -50,8 +50,8 @@ public class Square {
         this.isCheese = isCheese;
         
         //create square button
-//        btn = new JButton();
-        btn = new JButton(String.valueOf(this.position));
+       btn = new JButton();
+        // btn = new JButton(String.valueOf(this.position));
         // btn.setOpaque(false);
         btn.setEnabled(false);
         btn.setPreferredSize(new Dimension(btnWidth, btnHeight));
